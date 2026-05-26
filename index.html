@@ -1,135 +1,220 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="icon" href="https://images.genius.com/d5bc99fc14b779b3753e3f7e0628e899.980x980x1.png" type="image/png">
-<title>Bon Rétablissement</title>
-<style>
-* { box-sizing: border-box; margin: 0; padding: 0; }
-html, body {
-  height: 100%;
-  font-family: Arial, sans-serif;
-  background: #fff;
-  color: #000;
-}
-body {
-  display: flex;
-  flex-direction: column;
-}
-.header {
-  width: 90%;
-  margin: 20px auto;
-  border: 3px solid black;
-  border-radius: 40px;
-  text-align: center;
-  padding: 20px;
-  font-size: 1.4em;
-}
-.top {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 40px;
-  flex-wrap: wrap;
-  margin-bottom: 30px;
-}
-.rotate {
-  width: 120px;
-  height: 120px;
-  border: 3px solid black;
-  object-fit: cover;
-  animation: spin 4s linear infinite;
-}
-@keyframes spin {
-  from { transform: rotate(0deg); }
-  to   { transform: rotate(360deg); }
-}
-.slider {
-  width: 120px;
-  height: 120px;
-  border: 3px solid black;
-  object-fit: cover;
-}
-.bottom {
-  flex: 1;
-  display: flex;
-  flex-direction: row;
-  gap: 20px;
-  padding: 20px;
-  align-items: stretch;
-}
-.card {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  border: 3px solid black;
-  min-height: 400px;
-  overflow: hidden;
-}
-.ad {
-  flex-shrink: 0;
-  border-bottom: 3px solid black;
-  text-align: center;
-  padding: 8px;
-}
-.card img {
-  flex: 1;
-  width: 100%;
-  object-fit: cover;
-  display: block;
-  min-height: 0;
-}
-@media (max-width: 700px) {
-  .bottom { flex-direction: column; }
-  .card   { min-height: 250px; }
-  .top    { flex-direction: column; }
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carte Mentale - Énergie Thermique</title>
+    <style>
+        :root {
+            --bg-color: #f8fafc;
+            --core-color: #ef4444;
+            --branch-def: #f97316;
+            --branch-trans: #3b82f6;
+            --branch-adv: #22c55e;
+            --branch-lim: #a855f7;
+            --text-dark: #1e293b;
+            --text-muted: #64748b;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-dark);
+            margin: 0;
+            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 50px;
+            text-align: center;
+            font-weight: 700;
+        }
+
+        /* Conteneur principal de la carte mentale */
+        .mindmap-wrapper {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            max-width: 1400px;
+            min-height: 600px;
+            gap: 40px;
+        }
+
+        /* Colonnes latérales pour les sujets */
+        .side-column {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            gap: 40px;
+            flex: 1;
+            z-index: 2;
+        }
+
+        /* Cœur central */
+        .core-node {
+            background: linear-gradient(135deg, #ef4444, #b91c1c);
+            color: white;
+            padding: 30px;
+            border-radius: 50%;
+            width: 220px;
+            height: 220px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(239, 68, 68, 0.4);
+            font-weight: bold;
+            font-size: 1.3rem;
+            z-index: 3;
+            flex-shrink: 0;
+            border: 6px solid white;
+        }
+
+        .core-node span {
+            font-size: 0.85rem;
+            font-weight: normal;
+            opacity: 0.9;
+            margin-top: 8px;
+        }
+
+        /* Boîtes de sujets (Branches) */
+        .branch-node {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            border-left: 6px solid transparent;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .branch-node:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Couleurs spécifiques des branches */
+        .def { border-left-color: var(--branch-def); }
+        .trans { border-left-color: var(--branch-trans); }
+        .adv { border-left-color: var(--branch-adv); }
+        .lim { border-left-color: var(--branch-lim); }
+
+        .branch-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+
+        .def .branch-title { color: var(--branch-def); }
+        .trans .branch-title { color: var(--branch-trans); }
+        .adv .branch-title { color: var(--branch-adv); }
+        .lim .branch-title { color: var(--branch-lim); }
+
+        /* Listes et textes intérieurs */
+        ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        li {
+            margin-bottom: 12px;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            color: #475569;
+        }
+
+        li strong {
+            color: var(--text-dark);
+        }
+
+        .example {
+            display: block;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            font-style: italic;
+            margin-top: 4px;
+        }
+
+        /* Design adaptatif (pour les tablettes et mobiles) */
+        @media (max-width: 1024px) {
+            .mindmap-wrapper {
+                flex-direction: column;
+                gap: 30px;
+            }
+            .side-column {
+                width: 100%;
+                gap: 30px;
+            }
+            .core-node {
+                order: -1; /* Met le centre au-dessus sur petit écran */
+                width: 180px;
+                height: 180px;
+                font-size: 1.1rem;
+            }
+        }
+    </style>
 </head>
 <body>
+	</br></br></br>
+    <div class="mindmap-wrapper">
+        
+        <div class="side-column">
+            <div class="branch-node def">
+                <div class="branch-title">Qu'est-ce que c'est ?</div>
+                <ul>
+                    <li><strong>Agitation des particules :</strong> Liée à la vitesse des atomes/molécules. Plus ils bougent, plus il fait chaud.</li>
+                    <li><strong>Omniprésente :</strong> C'est l'une des énergies les plus simples à produire.</li>
+                    <li><strong>Partout autour de nous :</strong> Générée naturellement par le frottement, les moteurs, les PC ou le corps humain.</li>
+                </ul>
+            </div>
 
-<div class="header">
-  <b>
-    🌹<br>
-    BON RÉTABLISSEMENT™<br>
-    Nous vous pensons fort, Bibou 67.
-  </b>
-</div>
+            <div class="branch-node trans">
+                <div class="branch-title">Comment ça marche ?</div>
+                <p style="font-size: 0.85rem; color: var(--text-muted); margin-top:-10px; margin-bottom:10px;">La chaleur va toujours du chaud vers le froid :</p>
+                <ul>
+                    <li><strong>Conduction :</strong> Par contact direct. <span class="example">Ex: Une cuillère dans la soupe chaude.</span></li>
+                    <li><strong>Convection :</strong> Par mouvement de fluides/gaz. <span class="example">Ex: L'air chaud qui monte.</span></li>
+                    <li><strong>Rayonnement :</strong> Par ondes (même dans le vide). <span class="example">Ex: La chaleur du Soleil.</span></li>
+                </ul>
+            </div>
+        </div>
 
-<div class="top">
-  <img src="https://tse3.mm.bing.net/th/id/OIP.r44XEjLGEbaWTUJE64JhJAHaHS?w=1070&h=1053&rs=1&pid=ImgDetMain&o=7&rm=3" class="rotate" alt="Tacos cat">
-  <img id="slider" class="slider" alt="Noah le crook"
-    src="https://tse2.mm.bing.net/th/id/OIP.vF4cDNNS3E80QPPLtvMhFgHaHS?rs=1&pid=ImgDetMain&o=7&rm=3">
-</div>
+        <div class="core-node">
+            ÉNERGIE THERMIQUE
+            <span>Énergie liée à la chaleur</span>
+        </div>
 
-<div class="bottom">
-  <div class="card">
-    <div class="ad"><b>Publicité:<br>"Oreiller Anti-Grippe Intelligent™"<br><i>Tu éternues ? Il te console.</i></b></div>
-    <img src="https://lagranderecre-lagranderecre-fr-storage.omn.proximis.com/Imagestorage/images/0/0/631216188deba_881636_2_Copier_.jpg" alt="">
-  </div>
-  <div class="card">
-    <div class="ad"><b>Publicité:<br>"Inquiet que vos élèves sont en retard sur les séances ?"<br><i>Aucune inquiétude : votre progression a été automatiquement mise en pause.</i></b></div>
-    <img src="https://img.freepik.com/vecteurs-premium/ruee-vers-enfants-ecole-retard-pour-cours_160308-5676.jpg?w=1380" alt="">
-  </div>
-  <div class="card">
-    <div class="ad"><b>Publicité:<br>"Guérison Express 3000"<br><i>Clique sur un bouton et attends.</i></b></div>
-    <img src="https://tse1.explicit.bing.net/th/id/OIP.r19LeKs7jKYwCBIKUXSVhQHaGI?rs=1&pid=ImgDetMain&o=7&rm=3" alt="">
-  </div>
-</div>
+        <div class="side-column">
+            <div class="branch-node adv">
+                <div class="branch-title">Avantages</div>
+                <ul>
+                    <li><strong>Indispensable :</strong> Cuisson, chauffage, stérilisation et processus industriels.</li>
+                    <li><strong>Stockable :</strong> S'emprisonne bien dans l'eau chaude, les roches ou matériaux spécifiques.</li>
+                    <li><strong>Électricité :</strong> Fait tourner les turbines (centrales nucléaires, gaz, solaire thermique).</li>
+                </ul>
+            </div>
 
-<script>
-const images = [
-  "https://tse2.mm.bing.net/th/id/OIP.vF4cDNNS3E80QPPLtvMhFgHaHS?rs=1&pid=ImgDetMain&o=7&rm=3",
-  "https://tse1.mm.bing.net/th/id/OIP.QCqzXOXNj2Cu-H8nAceVUgHaFk?rs=1&pid=ImgDetMain&o=7&rm=3",
-  "https://static.actu.fr/uploads/2025/01/a86c358be81764d6c358be817817c3v.jpeg"
-];
-let i = 0;
-setInterval(() => {
-  i = (i + 1) % images.length;
-  document.getElementById("slider").src = images[i];
-}, 3000);
-</script>
+            <div class="branch-node lim">
+                <div class="branch-title">Limites & Problèmes</div>
+                <ul>
+                    <li><strong>Pertes d'énergie :</strong> Se dissipe très vite (nécessite une excellente isolation).</li>
+                    <li><strong>Rendement limité :</strong> Impossible de transformer 100% de chaleur en travail (lois thermodynamiques).</li>
+                    <li><strong>Pollution :</strong> Les énergies fossiles rejettent du CO2 et des particules fines.</li>
+                    <li><strong>Dangers :</strong> Risques de brûlures, d'explosions et d'incendies.</li>
+                </ul>
+            </div>
+        </div>
+
+    </div>
 
 </body>
 </html>
