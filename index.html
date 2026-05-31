@@ -297,7 +297,7 @@ function updateDangerUI(){
   const newSrc = dangerPct >= 60 ? IMG_STANDUP : IMG_CRAWL;
   if(img.src !== newSrc) img.src = newSrc;
 
-  const size = 10 + (dangerPct / 100) * 100;
+  const size = 10 + (dangerPct / 100) * 35;
   img.style.width = size + '%';
 }
 
